@@ -10,7 +10,7 @@ function showModules() {
     if (welcome && panel) {
         welcome.classList.add('hidden');
         panel.classList.remove('hidden');
-        panel.style.display = 'flex'; // Forzamos el diseño para el celular
+        window.scrollTo(0, 0); // Esto asegura que la nueva pantalla empiece desde arriba
     }
 }
 
