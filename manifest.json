@@ -1,0 +1,15 @@
+{
+  "name": "S.A.M.A. Mach 20",
+  "short_name": "SAMA",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fbc02d",
+  "theme_color": "#fbc02d",
+  "icons": [
+    {
+      "src": "icono.png",
+      "sizes": "1024x1024",
+      "type": "image/jpeg"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.A.M.A. - Sistema de Apoyo a la Modelación</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="welcome-screen" class="screen">
+        <div class="koro-container">
+            <img src="koro_normal.png" alt="Koro Sensei" id="koro-main">
+            <h1>¡Bienvenido al Sistema S.A.M.A.!</h1>
+            <p>Modelación Matemática a Mach 20</p>
+            <button onclick="showModules()">Iniciar Entrenamiento</button>
+        </div>
+    </div>
+
+    <div id="main-panel" class="screen hidden">
+        <div class="layout-container" style="max-width: 800px;">
+            <div class="koro-side-display">
+                <img src="8CTUBNI.png" alt="Koro Presentador" class="full-koro-img">
+                <div class="speech-bubble">
+                    <p id="koro-message">¡Selecciona un nivel para comenzar el entrenamiento, colega!</p>
+                </div>
+            </div>
+
+            <div class="controls-display" style="flex: 2;">
+                <header><h2>Panel de Control S.A.M.A.</h2></header>
+                <div id="grade-selector" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn-grade" onclick="setGrade(1)">1er Grado</button>
+                    <button class="btn-grade" onclick="setGrade(2)">2do Grado</button>
+                    <button class="btn-grade" onclick="setGrade(3)">3er Grado</button>
+                </div>
+
+                <div class="grid-modules hidden" id="module-cards" style="display: block;">
+                    <div class="card" style="width: 100%; min-height: 200px; cursor: default;">
+                        <h3>Misión del Día</h3>
+                        <div id="pda-display" style="margin-top: 15px;">Selecciona un grado para comenzar</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tactical-screen" class="screen hidden" style="background-image: url('image_8be4f3.jpg'); background-size: cover; position: fixed; inset: 0; z-index: 1000; overflow-y: auto;">
+        <div class="planning-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100%; padding: 30px; background: rgba(255,255,255,0.1);">
+            
+            <div class="selected-config" style="background: rgba(255, 255, 255, 0.95); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 2px solid #FF9800; width: 80%;">
+                <h3>Misión Detectada para <span id="display-grade">...</span> Grado</h3>
+                <p><strong>Contenido:</strong> <span id="display-content">...</span></p>
+                <p><strong>PDA:</strong> <span id="display-pda">...</span></p>
+            </div>
+
+            <div class="problem-box" style="background: white; padding: 20px; border-radius: 15px; border: 3px solid #FF9800; margin-bottom: 20px; width: 80%; max-width: 600px;">
+                <p style="font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                    Problemática de la Escuela (Contexto)
+                    <span onclick="alert('Sugerencia Mach 20: Intenta con Bullying, Consumo de agua o Baches en la zona.')" style="cursor:pointer; font-size:0.85rem; color:#FF9800; text-decoration: underline;">💡 Sugerir Contexto</span>
+                </p>
+                <textarea id="problem-input" placeholder="Ej: Falta de áreas verdes o gestión de residuos..." style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; resize: none;"></textarea>
+                <button onclick="contextualizarEstrategias()" style="width: 100%; background-color: #FF9800; color: white; border: none; padding: 12px; border-radius: 5px; margin-top: 10px; font-weight: bold; font-size: 1.1rem;">
+                    Contextualizar con Tentáculos
+                </button>
+            </div>
+
+            <div id="tentacles-strategies" class="grid-tentacles hidden" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 95%;">
+                <div class="tentacle-card" style="background: white; padding: 15px; border-radius: 10px; border-bottom: 5px solid #FFC107;">
+                    <h4>🐙 Aterrizaje</h4>
+                    <p id="ejemplo-aterrizaje" style="font-size: 0.85rem;">...</p>
+                </div>
+                <div class="tentacle-card" style="background: white; padding: 15px; border-radius: 10px; border-bottom: 5px solid #F44336;">
+                    <h4>🐙 Rescate</h4>
+                    <p id="ejemplo-rescate" style="font-size: 0.85rem;">...</p>
+                </div>
+                <div class="tentacle-card" style="background: white; padding: 15px; border-radius: 10px; border-bottom: 5px solid #4CAF50;">
+                    <h4>🐙 Mach 20</h4>
+                    <p id="ejemplo-mach" style="font-size: 0.85rem;">...</p>
+                </div>
+            </div>
+
+            <div id="navegacion-final" class="hidden" style="display: flex; gap: 15px; margin-top: 20px;">
+                <button onclick="irAProyectos()" style="background:#4CAF50; color:white; padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">🚀 Ver Proyecto Situado</button>
+                <button onclick="irARadar()" style="background:#1976d2; color:white; padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">📡 Ver Radar de Evaluación</button>
+            </div>
+
+            <button onclick="cerrarTactico()" style="background-color: #f44336; color:white; border:none; padding:10px 20px; border-radius:10px; margin-top:20px; cursor: pointer;">
+                ↩ Regresar al Panel
+            </button>
+        </div>
+    </div>
+
+    <div id="project-screen" class="screen hidden" style="background-color: white; position: fixed; inset: 0; z-index: 2000; overflow-y: auto;">
+        <div style="padding: 40px; max-width: 900px; margin: auto;">
+            <h2 style="color: #4CAF50; border-bottom: 3px solid #4CAF50;">🚀 Proyecto Situado: Codiseño Zona 57</h2>
+            <div id="project-content" style="background: #f9f9f9; padding: 25px; border-radius: 15px; margin-top: 20px; line-height: 1.6;"></div>
+            <button onclick="regresarATactico('project-screen')" style="background: #f44336; color: white; margin-top: 20px; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;">↩ Volver</button>
+        </div>
+    </div>
+
+    <div id="radar-screen" class="screen hidden" style="background-color: white; position: fixed; inset: 0; z-index: 3000; overflow-y: auto;">
+        <div style="padding: 40px; max-width: 900px; margin: auto;">
+            <div id="rubrica-content" style="margin-top: 20px;"></div>
+            <button onclick="regresarATactico('radar-screen')" style="background: #f44336; color: white; margin-top: 20px; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;">↩ Volver</button>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="screen hidden" style="background-color: rgba(0,0,0,0.85); position: fixed; inset: 0; z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+        <div style="text-align: center;">
+            <img src="9713ff0c8156c4a894991b17a466493f.gif" alt="Koro Pensando" style="width: 250px; border-radius: 50%; box-shadow: 0 0 20px rgba(255,255,0,0.5);">
+            <h1 style="margin-top: 20px; font-family: 'Segoe UI', sans-serif;">Koro-sensei está pensando...</h1>
+            <p style="font-size: 1.2rem; color: #ffeb3b;">Conectando con el satélite pedagógico de la Zona 57.</p>
+            <p style="font-size: 1rem; margin-top: 10px; color: #aaa;">Procesando PDA e inclusión a Mach 20.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="planning_tactico.js"></script>
+
+</body>
+</html>
