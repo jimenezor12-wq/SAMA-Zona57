@@ -1,5 +1,19 @@
-// 1. VARIABLES GLOBALES Y DATOS
-let currentGrade = 0;
+// 1. VARIABLES GLOBALES
+let currentGrade = 1;
+let contenidoSeleccionadoActual = "";
+
+// 2. NAVEGACIÓN
+function showModules() {
+    const welcome = document.getElementById('welcome-screen');
+    const panel = document.getElementById('main-panel');
+    
+    if (welcome && panel) {
+        welcome.classList.add('hidden');
+        panel.classList.remove('hidden');
+        panel.style.display = 'flex'; // Forzamos el diseño para el celular
+    }
+}
+
 
 const pdaPrimerGrado = [
     {
@@ -238,41 +252,86 @@ const pdaTercerGrado = [
         ]
     }
 ];
-//// ==========================================
-// 2. FUNCIONES DE NAVEGACIÓN Y CONTROL
-// ==========================================
 
-// Variable global para no perder el nombre del contenido seleccionado
-let contenidoSeleccionadoActual = "";
 
-function showModules() {
-    document.getElementById('welcome-screen').classList.add('hidden');
-    document.getElementById('main-panel').classList.remove('hidden');
-}
-
-/**
- * Configura el grado seleccionado y prepara el mensaje de Koro.
- */
+// 3. SELECCIÓN DE GRADO
 function setGrade(grade) {
     currentGrade = grade;
     document.getElementById('module-cards').classList.remove('hidden');
-    const koroMsg = document.getElementById('koro-message');
+    document.getElementById('koro-message').innerText = `¡Iniciando entrenamiento de ${grade}º Grado!`;
     
-    koroMsg.innerText = `¡Iniciando entrenamiento de ${grade}º Grado!`;
-    
+    // Asegúrate de tener tus arrays pdaPrimerGrado, etc. definidos.
     let baseDatos = (grade === 1) ? pdaPrimerGrado : (grade === 2) ? pdaSegundoGrado : pdaTercerGrado;
 
     document.getElementById('pda-display').innerHTML = `
-        <p style="font-size: 0.9rem; color: #666;">Elige el contenido programático:</p>
-        <select id="select-contenido" onchange="mostrarPDA(this.value)" style="width:100%; padding:12px; border-radius:10px; border: 2px solid #FF9800; font-size: 1rem;">
+        <select id="select-contenido" onchange="mostrarPDA(this.value)" style="width:100%; padding:12px; border-radius:10px; border: 2px solid #FF9800;">
             <option value="">-- Selecciona un Contenido --</option>
             ${baseDatos.map((c, index) => `<option value="${index}">${c.contenido}</option>`).join('')}
         </select>
     `;
 }
 
+// 4. ANALIZAR PDA
+function analizarIndividual(textoPDA) {
+    let bloom = "Análisis de Proceso";
+    let sesiones = "4 a 6";
+    let colorKoro = "koro_normal.png"; 
+
+    if (/(Reconoce|Identifica|Explora|Lee|Compara|Describe|Observa)/i.test(textoPDA)) {
+        bloom = "Conocimiento / Comprensión"; sesiones = "4 a 5"; colorKoro = "rosa.png";
+    } else if (/(Usa|Utiliza|Aplica|Calcula|Resuelve)/i.test(textoPDA)) {
+        bloom = "Aplicación Técnica"; sesiones = "6 a 8"; colorKoro = "naranja.png";
+    } else if (/(Analiza|Comprueba|Argumenta)/i.test(textoPDA)) {
+        bloom = "Análisis y Evaluación"; sesiones = "8 a 10"; colorKoro = "koro_right.png";
+    } else if (/(Modela|Construye|Diseña)/i.test(textoPDA)) {
+        bloom = "Creación / Modelación"; sesiones = "10 a 12"; colorKoro = "koro_rayas.png";
+    }
+
+    document.getElementById('koro-message').innerHTML = `
+        <div style="background: #fdf2f2; padding: 8px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #d32f2f;">
+            <strong>Misión:</strong> ${contenidoSeleccionadoActual}
+        </div>
+        <strong>Análisis:</strong> Nivel <em>${bloom}</em>.<br>
+        <strong>Sugerencia:</strong> <strong>${sesiones} sesiones</strong>.
+    `;
+    const img = document.querySelector('.full-koro-img');
+    if(img) img.src = colorKoro;
+}
+
+// Service Worker y Carga
+window.addEventListener('load', () => {
+    const loading = document.getElementById('loading-screen');
+    if (loading) loading.style.display = 'none';
+});
+
+
 /**
- * Muestra el contenido elegido, los botones de PDA y prepara la transición.
+ * Configura el grado seleccionado y prepara el menú de contenidos.
+ */
+function setGrade(grade) {
+    currentGrade = grade;
+    const cards = document.getElementById('module-cards');
+    if (cards) cards.classList.remove('hidden');
+    
+    const koroMsg = document.getElementById('koro-message');
+    if (koroMsg) koroMsg.innerText = `¡Iniciando entrenamiento de ${grade}º Grado!`;
+    
+    let baseDatos = (grade === 1) ? pdaPrimerGrado : (grade === 2) ? pdaSegundoGrado : pdaTercerGrado;
+
+    const display = document.getElementById('pda-display');
+    if (display) {
+        display.innerHTML = `
+            <p style="font-size: 0.9rem; color: #666;">Elige el contenido programático:</p>
+            <select id="select-contenido" onchange="mostrarPDA(this.value)" style="width:100%; padding:12px; border-radius:10px; border: 2px solid #FF9800; font-size: 1rem;">
+                <option value="">-- Selecciona un Contenido --</option>
+                ${baseDatos.map((c, index) => `<option value="${index}">${c.contenido}</option>`).join('')}
+            </select>
+        `;
+    }
+}
+
+/**
+ * Muestra el contenido y genera los botones de los PDA.
  */
 function mostrarPDA(index) {
     if(index === "") return;
@@ -280,7 +339,6 @@ function mostrarPDA(index) {
     let baseActual = (currentGrade === 1) ? pdaPrimerGrado : (currentGrade === 2) ? pdaSegundoGrado : pdaTercerGrado;
     const item = baseActual[index];
     
-    // GUARDAMOS EL CONTENIDO AQUÍ PARA QUE NO SALGA VACÍO DESPUÉS
     contenidoSeleccionadoActual = item.contenido;
     
     let botonesHTML = "";
@@ -321,13 +379,10 @@ function mostrarPDA(index) {
 // 3. FUNCIONES DE INTELIGENCIA Y BLOOM
 // ==========================================
 
-/**
- * Evalúa niveles de Bloom, sugiere sesiones y cambia la cara de Koro.
- */
 function analizarIndividual(textoPDA) {
     let bloom = "Análisis de Proceso";
     let sesiones = "4 a 6";
-    let colorKoro = "koro_normal.png"; // Por defecto: Cara relajada
+    let colorKoro = "koro_normal.png"; 
 
     if (/(Reconoce|Identifica|Explora|Lee|Compara|Describe|Observa)/i.test(textoPDA)) {
         bloom = "Conocimiento / Comprensión (Nivel 1-2)";
@@ -350,25 +405,12 @@ function analizarIndividual(textoPDA) {
         colorKoro = "koro_rayas.png";
     }
 
-    // Actualizamos el mensaje de Koro con el análisis
-    document.getElementById('koro-message').innerHTML = `
-        <div style="font-size:0.9rem; line-height:1.4;">
-            <strong style="color:#d32f2f;">Análisis Pedagógico (NEM):</strong><br>
-            El verbo operativo indica un nivel de <em>${bloom}</em>.<br><br>
-            <strong style="color:#1976d2;">Sugerencia Mach 20:</strong><br>
-            Para un proyecto STEAM integral, estimo <strong>${sesiones} sesiones</strong>. 
-            <br><small>(Basado en la complejidad de la fase de indagación y prototipado).</small>
-        </div>
-    `;
-    // 2. CORRECCIÓN CRÍTICA: Inyectamos el análisis Y REAFIRMAMOS EL CONTENIDO
-    // Usamos 'contenidoSeleccionadoActual' que definimos en la función anterior
     document.getElementById('koro-message').innerHTML = `
         <div style="font-size:0.9rem; line-height:1.4;">
             <div style="background: #fdf2f2; padding: 8px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #d32f2f;">
                 <strong style="color:#d32f2f; display:block;">Misión (Contenido):</strong>
                 <span style="color:#333;">${contenidoSeleccionadoActual}</span>
             </div>
-            
             <strong style="color:#d32f2f;">Análisis Pedagógico (NEM):</strong><br>
             El verbo operativo indica un nivel de <em>${bloom}</em>.<br><br>
             <strong style="color:#1976d2;">Sugerencia Mach 20:</strong><br>
@@ -382,23 +424,23 @@ function analizarIndividual(textoPDA) {
 }
 
 function openModule(type) {
-    if(type === 'proyectos') { 
-        irAProyectos(); 
-    } 
-    else if(type === 'radar_btn') { 
-        irARadar(); 
-    } 
-    else if(type === 'mision') { 
-        document.getElementById('koro-message').innerText = "¡Enfócate en el PDA seleccionado para cumplir la misión!"; 
-    }
+    if(type === 'proyectos') irAProyectos(); 
+    else if(type === 'radar_btn') irARadar(); 
+    else if(type === 'mision') document.getElementById('koro-message').innerText = "¡Enfócate en el PDA!";
 }
+
+// Registro del Service Worker
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
 }
-// Esto asegura que al cargar la página en el cel, la pantalla de carga se oculte forzosamente
+
+// Limpieza de pantalla de carga al inicio
+// ... última función del archivo ...
+
 window.addEventListener('load', () => {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
         loadingScreen.style.display = 'none';
         loadingScreen.classList.add('hidden');
     }
+});
