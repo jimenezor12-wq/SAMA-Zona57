@@ -129,24 +129,25 @@ function abrirPanelTactico() {
 async function contextualizarEstrategias() {
     const problema = document.getElementById('problem-input').value.trim();
     const pdaActual = document.getElementById('display-pda').innerText;
-    const loadingScreen = document.getElementById('loading-screen'); // Capturamos la nueva pantalla
+    const loadingScreen = document.getElementById('loading-screen');
 
     if (!problema) return alert("Por favor, describe la problemática de la escuela.");
 
-    // 1. MOSTRAR PANTALLA DE CARGA
+    // 1. MOSTRAR PANTALLA DE CARGA (Con display flex para centrar contenido)
+    loadingScreen.style.display = 'flex';
     loadingScreen.classList.remove('hidden');
     
-    // Cambiamos el mensaje de Koro de fondo (por si acaso)
     document.getElementById('koro-message').innerText = "Iniciando análisis neuronal pedagógico...";
     
-    // 2. LLAMAR A LA IA (La aplicación se "espera" aquí hasta que responda)
+    // 2. LLAMAR A LA IA
     const res = await llamarIA(pdaActual, problema, currentGrade);
 
-    // 3. OCULTAR PANTALLA DE CARGA (Pase lo que pase después)
+    // 3. OCULTAR PANTALLA DE CARGA
+    loadingScreen.style.display = 'none';
     loadingScreen.classList.add('hidden');
 
     if (res) {
-        // Sincronización de los tentáculos (asegúrate de que los IDs coincidan con tu HTML)
+        // Llenado de tentáculos
         document.getElementById('ejemplo-aterrizaje').innerHTML = `<strong>${res.encuadre.titulo}</strong><br>${res.encuadre.aterrizaje_situado}`;
         document.getElementById('ejemplo-rescate').innerHTML = `<strong>Tipo:</strong> ${res.rescate_inclusion.tipo_accion}<br><strong>Estrategia:</strong> ${res.rescate_inclusion.estrategia_BAP}`;
         document.getElementById('ejemplo-mach').innerText = res.mach20_modelacion.proceso_ingenieria;
@@ -157,23 +158,18 @@ async function contextualizarEstrategias() {
         if (!navFinal) {
             navFinal = document.createElement('div');
             navFinal.id = "navegacion-final";
-            navFinal.style.cssText = "display:flex; gap:15px; margin-top:20px; width:80%;";
+            navFinal.style.cssText = "display:flex; gap:15px; margin-top:20px; width:100%;";
             document.querySelector('.planning-container').insertBefore(navFinal, document.querySelector('button[onclick="cerrarTactico()"]'));
         }
         navFinal.innerHTML = `
-            <button onclick="irAProyectos()" style="background:#4CAF50; color:white; flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">🚀 Ver Secuencia Completa</button>
-            <button onclick="irARadar()" style="background:#1976d2; color:white; flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">📡 Ver Radar de Evaluación</button>
+            <button onclick="irAProyectos()" style="background:#4CAF50; color:white; flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">🚀 Ver Proyecto Completo</button>
+            <button onclick="irARadar()" style="background:#1976d2; color:white; flex:1; padding:12px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">📡 Ver Radar</button>
         `;
         navFinal.classList.remove('hidden');
-        
-        // Mensaje de éxito de Koro en el fondo
-        document.getElementById('koro-message').innerText = "¡Estrategias contextualizadas con éxito, colega!";
+        document.getElementById('koro-message').innerText = "¡Estrategias contextualizadas con éxito!";
     } else {
-        // Si la IA falla, avisamos
-        document.getElementById('koro-message').innerText = "Hubo un error en la conexión neuronal. Intenta de nuevo.";
-        alert("Hubo un problema al conectar con la IA. Revisa tu conexión o la API KEY.");
+        alert("Hubo un problema al conectar con la IA. Revisa tu conexión.");
     }
-
 }
 
 function irAProyectos() {
