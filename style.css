@@ -219,4 +219,74 @@ button:active {
     #project-screen, #radar-screen {
         padding: 15px;
     }
+    /* AJUSTES DE RESPONSIVIDAD EXTREMA - MACH 20 */
+@media (max-width: 600px) {
+    /* 1. Permitir que la pantalla haga scroll y no se corte nada */
+    body, .screen {
+        overflow-y: auto !important;
+        height: auto !important;
+        min-height: 100vh;
+    }
+
+    /* 2. Ajustar el contenedor principal */
+    .layout-container {
+        flex-direction: column !important; /* Koro arriba, panel abajo */
+        gap: 20px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    /* 3. Centrar a Koro y que no se corte */
+    .koro-side-display {
+        min-width: 100% !important;
+        height: 250px; /* Limitamos altura para que no ocupe todo */
+        margin-bottom: 50px; /* Espacio para el globo de texto */
+    }
+
+    .full-koro-img {
+        max-width: 180px !important; /* Koro más pequeño en cel */
+        margin: 0 auto;
+    }
+
+    /* 4. El globo de texto sobre la cabeza */
+    .speech-bubble {
+        width: 85% !important;
+        left: 50% !important;
+        bottom: 80% !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* 5. Los botones de grado en una sola fila pero más pequeños */
+    #grade-selector {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+
+    .btn-grade {
+        padding: 8px 5px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* 6. CORRECCIÓN DE LETRAS ANGOSTAS EN RESULTADOS */
+    .grid-tentacles {
+        grid-template-columns: 1fr !important; /* Un tentáculo por fila */
+        width: 90% !important;
+    }
+
+    .tentacle-card {
+        margin-bottom: 15px;
+        padding: 20px !important; /* Más aire para las letras */
+    }
+
+    /* 7. Ajuste de cajas de texto */
+    .problem-box, .selected-config {
+        width: 95% !important;
+        padding: 15px !important;
+    }
+
+    #problem-input {
+        font-size: 1rem !important; /* Evita el zoom automático en iPhone/Android */
+    }
+
 }
