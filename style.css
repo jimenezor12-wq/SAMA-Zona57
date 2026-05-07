@@ -1,4 +1,4 @@
-/* 1. VARIABLES Y CONFIGURACIÓN BASE */
+* 1. VARIABLES Y CONFIGURACIÓN BASE */
 :root {
     --koro-yellow: #fbc02d;
     --koro-dots: #d4a017;
@@ -26,7 +26,17 @@ body {
     transition: all 0.5s ease;
 }
 
-.hidden { display: none !important; }
+/* Fuerza la desaparición de cualquier elemento con esta clase */
+.hidden { 
+    display: none !important; 
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Regla específica para que el loading no gane */
+#loading-screen.hidden {
+    display: none !important;
+}
 
 /* 3. PANTALLA DE BIENVENIDA */
 .koro-container {
