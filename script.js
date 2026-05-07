@@ -395,3 +395,10 @@ function openModule(type) {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
+// Esto asegura que al cargar la página en el cel, la pantalla de carga se oculte forzosamente
+window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+        loadingScreen.classList.add('hidden');
+    }
