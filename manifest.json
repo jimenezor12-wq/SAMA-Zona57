@@ -9,7 +9,17 @@
     {
       "src": "icono.png",
       "sizes": "1024x1024",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "image_c21bdd.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Pantalla de Inicio SAMA"
     }
   ]
 }
