@@ -21,18 +21,22 @@ body {
 /* 2. ESTRUCTURA DE PANTALLAS */
 .screen {
     min-height: 100vh;
+    width: 100%;
     display: flex;
+    flex-direction: column; /* Ayuda a alinear mejor en móviles */
     align-items: center;
     justify-content: center;
-    transition: all 0.5s ease;
     background: transparent !important;
 }
 
 /* Fuerza la desaparición absoluta para navegación */
 .hidden { 
     display: none !important; 
-    visibility: hidden !important;
-    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
 }
 
 #loading-screen.hidden {
