@@ -288,5 +288,5 @@ button:active {
     #problem-input {
         font-size: 1rem !important; /* Evita el zoom automático en iPhone/Android */
     }
-
+}
 }
